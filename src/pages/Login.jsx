@@ -35,14 +35,15 @@ const Login = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'rgba(255, 255, 255, 0.8)', // More opaque
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
             borderRadius: 4,
-            width: '100%'
+            width: '100%',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
           }}
         >
-          <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#fff' }}>
+          <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: '#1e293b' }}>
             RentChain Login
           </Typography>
           
@@ -61,8 +62,8 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               sx={{ mb: 2 }}
-              InputLabelProps={{ style: { color: '#aaa' } }}
-              InputProps={{ style: { color: '#fff' } }}
+              InputLabelProps={{ style: { color: '#64748b' } }}
+              InputProps={{ style: { color: '#0f172a' } }}
             />
             <TextField
               margin="normal"
@@ -76,8 +77,8 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               sx={{ mb: 3 }}
-              InputLabelProps={{ style: { color: '#aaa' } }}
-              InputProps={{ style: { color: '#fff' } }}
+              InputLabelProps={{ style: { color: '#64748b' } }}
+              InputProps={{ style: { color: '#0f172a' } }}
             />
             <Button
               type="submit"
