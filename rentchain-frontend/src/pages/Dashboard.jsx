@@ -367,6 +367,7 @@ export default function Dashboard() {
       }}
       whileTap={{ scale: 0.98 }}
       layout
+      style={{ height: '100%' }}
     >
       <Card sx={{
         height: '100%',

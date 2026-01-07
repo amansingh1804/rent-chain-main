@@ -182,6 +182,10 @@ app.post('/terminate', async (req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`API server listening on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`API server listening on port ${port}`);
+  });
+}
+
+module.exports = app;

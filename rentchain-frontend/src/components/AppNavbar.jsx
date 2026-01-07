@@ -29,7 +29,7 @@ import {
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { fadeInUp, buttonHover, buttonTap } from '../animations';
+import { buttonHover, buttonTap } from '../animations';
 import { useNotifications } from '../contexts/NotificationContext';
 
 export default function AppNavbar() {
@@ -40,6 +40,16 @@ export default function AppNavbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
+  const [aiFeaturesAnchorEl, setAiFeaturesAnchorEl] = useState(null);
+
+  const handleAiFeaturesMenu = (event) => {
+    setAiFeaturesAnchorEl(event.currentTarget);
+  };
+
+  const handleAiFeaturesClose = () => {
+    setAiFeaturesAnchorEl(null);
+  };
+
   const [isScrolled, setIsScrolled] = useState(false);
   const { notifications, unreadCount, markAsRead, markAllAsRead, clearAllNotifications } = useNotifications();
 
@@ -104,250 +114,253 @@ export default function AppNavbar() {
         }}
       >
         <Toolbar sx={{ minHeight: 72, px: { xs: 2, md: 4 } }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Typography
-              variant="h6"
-              fontWeight={800}
-              sx={{
-                flexGrow: 1,
-                letterSpacing: 0.5,
-                color: 'primary.main',
-                cursor: 'pointer',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              }}
-              onClick={() => navigate('/')}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              🏠 RentChain
-            </Typography>
-          </motion.div>
+              <Typography
+                variant="h6"
+                fontWeight={800}
+                sx={{
+                  letterSpacing: 0.5,
+                  color: 'primary.main',
+                  cursor: 'pointer',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                }}
+                onClick={() => navigate('/')}
+              >
+                🏠 RentChain
+              </Typography>
+            </motion.div>
 
-          <AnimatePresence>
-            {isMobile ? (
-              <motion.div
-                key="mobile-menu"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-              >
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={handleMenu}
-                  sx={{
-                    ml: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(37, 99, 235, 0.04)',
-                      transform: 'scale(1.1)',
-                    },
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  PaperProps={{
-                    sx: {
-                      borderRadius: 3,
-                      backdropFilter: 'blur(20px)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-                      mt: 1,
-                    }
-                  }}
-                >
-                  {menuItems.map((item, index) => (
-                    <motion.div
-                      key={item.text}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <MenuItem
-                        onClick={() => {
-                          navigate(item.path);
-                          handleClose();
-                        }}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          py: 1.5,
-                          px: 3,
-                          borderRadius: 2,
-                          mx: 1,
-                          my: 0.5,
-                          transition: 'all 0.2s ease',
-                          '&:hover': {
-                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                            transform: 'translateX(4px)',
-                          }
-                        }}
-                      >
-                        <Box sx={{ color: isActive(item.path) ? 'primary.main' : 'text.secondary' }}>
-                          {item.icon}
-                        </Box>
-                        <Typography
-                          variant="body1"
-                          fontWeight={isActive(item.path) ? 600 : 500}
-                          sx={{ color: isActive(item.path) ? 'primary.main' : 'text.primary' }}
-                        >
-                          {item.text}
-                        </Typography>
-                      </MenuItem>
-                    </motion.div>
-                  ))}
-                </Menu>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="desktop-menu"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8 }}
-              >
+            <AnimatePresence>
+              {isMobile ? (
                 <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  whileHover={buttonHover}
-                  whileTap={buttonTap}
+                  key="mobile-menu"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Button
+                  <IconButton
+                    size="large"
+                    edge="start"
                     color="inherit"
-                    onClick={handleDropdownMenu}
-                    endIcon={dropdownAnchorEl ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    aria-label="menu"
+                    onClick={handleMenu}
                     sx={{
-                      fontWeight: 600,
-                      fontSize: '0.9rem',
-                      px: 3,
-                      py: 1.5,
-                      borderRadius: 3,
-                      position: 'relative',
-                      overflow: 'hidden',
-                      backgroundColor: dropdownAnchorEl ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
-                      color: dropdownAnchorEl ? 'primary.main' : 'text.primary',
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent)',
-                        transition: 'left 0.5s',
-                      },
-                      '&:hover::before': {
-                        left: '100%',
-                      },
+                      ml: 1,
                       '&:hover': {
                         backgroundColor: 'rgba(37, 99, 235, 0.04)',
-                        color: 'primary.main',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)',
+                        transform: 'scale(1.1)',
                       },
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transition: 'all 0.2s ease',
                     }}
                   >
-                    Menu
-                  </Button>
-                </motion.div>
-                <Menu
-                  id="dropdown-menu"
-                  anchorEl={dropdownAnchorEl}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  open={Boolean(dropdownAnchorEl)}
-                  onClose={handleDropdownClose}
-                  PaperProps={{
-                    sx: {
-                      borderRadius: 3,
-                      backdropFilter: 'blur(20px)',
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-                      mt: 1,
-                      minWidth: 200,
-                    }
-                  }}
-                >
-                  {menuItems.map((item, index) => (
-                    <motion.div
-                      key={item.text}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <MenuItem
-                        component={Link}
-                        to={item.path}
-                        onClick={handleDropdownClose}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          py: 1.5,
-                          px: 3,
-                          borderRadius: 2,
-                          mx: 1,
-                          my: 0.5,
-                          transition: 'all 0.2s ease',
-                          backgroundColor: isActive(item.path) ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
-                          '&:hover': {
-                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                            transform: 'translateX(4px)',
-                          }
-                        }}
+                    <MenuIcon />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    PaperProps={{
+                      sx: {
+                        borderRadius: 3,
+                        backdropFilter: 'blur(20px)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                        mt: 1,
+                      }
+                    }}
+                  >
+                    {menuItems.map((item, index) => (
+                      <motion.div
+                        key={item.text}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
                       >
-                        <ListItemIcon sx={{ color: isActive(item.path) ? 'primary.main' : 'text.secondary', minWidth: 40 }}>
-                          {item.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item.text}
-                          primaryTypographyProps={{
-                            fontWeight: isActive(item.path) ? 600 : 500,
-                            color: isActive(item.path) ? 'primary.main' : 'text.primary'
+                        <MenuItem
+                          onClick={() => {
+                            navigate(item.path);
+                            handleClose();
                           }}
-                        />
-                      </MenuItem>
-                    </motion.div>
-                  ))}
-                </Menu>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            py: 1.5,
+                            px: 3,
+                            borderRadius: 2,
+                            mx: 1,
+                            my: 0.5,
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                              backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                              transform: 'translateX(4px)',
+                            }
+                          }}
+                        >
+                          <Box sx={{ color: isActive(item.path) ? 'primary.main' : 'text.secondary' }}>
+                            {item.icon}
+                          </Box>
+                          <Typography
+                            variant="body1"
+                            fontWeight={isActive(item.path) ? 600 : 500}
+                            sx={{ color: isActive(item.path) ? 'primary.main' : 'text.primary' }}
+                          >
+                            {item.text}
+                          </Typography>
+                        </MenuItem>
+                      </motion.div>
+                    ))}
+                  </Menu>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="desktop-menu"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    whileHover={buttonHover}
+                    whileTap={buttonTap}
+                  >
+                    <Button
+                      color="inherit"
+                      onClick={handleDropdownMenu}
+                      endIcon={dropdownAnchorEl ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '0.9rem',
+                        px: 3,
+                        py: 1.5,
+                        borderRadius: 3,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        backgroundColor: dropdownAnchorEl ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+                        color: dropdownAnchorEl ? 'primary.main' : 'text.primary',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: '-100%',
+                          width: '100%',
+                          height: '100%',
+                          background: 'linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.1), transparent)',
+                          transition: 'left 0.5s',
+                        },
+                        '&:hover::before': {
+                          left: '100%',
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(37, 99, 235, 0.04)',
+                          color: 'primary.main',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.15)',
+                        },
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    >
+                      Menu
+                    </Button>
+                  </motion.div>
+                  <Menu
+                    id="dropdown-menu"
+                    anchorEl={dropdownAnchorEl}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                    open={Boolean(dropdownAnchorEl)}
+                    onClose={handleDropdownClose}
+                    PaperProps={{
+                      sx: {
+                        borderRadius: 3,
+                        backdropFilter: 'blur(20px)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                        mt: 1,
+                        minWidth: 200,
+                      }
+                    }}
+                  >
+                    {menuItems.map((item, index) => (
+                      <motion.div
+                        key={item.text}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <MenuItem
+                          component={Link}
+                          to={item.path}
+                          onClick={handleDropdownClose}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            py: 1.5,
+                            px: 3,
+                            borderRadius: 2,
+                            mx: 1,
+                            my: 0.5,
+                            transition: 'all 0.2s ease',
+                            backgroundColor: isActive(item.path) ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+                            '&:hover': {
+                              backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                              transform: 'translateX(4px)',
+                            }
+                          }}
+                        >
+                          <ListItemIcon sx={{ color: isActive(item.path) ? 'primary.main' : 'text.secondary', minWidth: 40 }}>
+                            {item.icon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={item.text}
+                            primaryTypographyProps={{
+                              fontWeight: isActive(item.path) ? 600 : 500,
+                              color: isActive(item.path) ? 'primary.main' : 'text.primary'
+                            }}
+                          />
+                        </MenuItem>
+                      </motion.div>
+                    ))}
+                  </Menu>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Box>
+
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Notification Menu */}
           <Menu
@@ -465,7 +478,98 @@ export default function AppNavbar() {
             ))}
           </Menu>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* AI Features Dropdown */}
+            <Box sx={{ display: { xs: 'none', md: 'block' }, mr: 1.5 }}>
+              <motion.div
+                whileHover={buttonHover}
+                whileTap={buttonTap}
+              >
+                <Button
+                  color="inherit"
+                  onClick={handleAiFeaturesMenu}
+                  endIcon={aiFeaturesAnchorEl ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    px: 2,
+                    py: 1,
+                    borderRadius: 3,
+                    textTransform: 'none',
+                    backgroundColor: aiFeaturesAnchorEl ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+                    color: aiFeaturesAnchorEl ? 'primary.main' : 'text.primary',
+                    '&:hover': {
+                      backgroundColor: 'rgba(37, 99, 235, 0.04)',
+                      color: 'primary.main',
+                    },
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
+                  AI Features
+                </Button>
+              </motion.div>
+              <Menu
+                anchorEl={aiFeaturesAnchorEl}
+                open={Boolean(aiFeaturesAnchorEl)}
+                onClose={handleAiFeaturesClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                PaperProps={{
+                  sx: {
+                    borderRadius: 3,
+                    backdropFilter: 'blur(20px)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+                    mt: 1,
+                    minWidth: 180,
+                  }
+                }}
+              >
+                {[
+                  { text: 'Tenant Scoring', path: '/tenant-scoring' },
+                  { text: 'Magic Match', path: '/magic-match' }
+                ].map((item) => (
+                  <MenuItem
+                    key={item.text}
+                    onClick={() => {
+                        handleAiFeaturesClose();
+                        if (item.action) {
+                            item.action();
+                        } else if (item.path !== '#') {
+                            navigate(item.path);
+                        }
+                    }}
+                    sx={{
+                      py: 1.5,
+                      px: 2.5,
+                      borderRadius: 2,
+                      mx: 0.5,
+                      my: 0.25,
+                      '&:hover': {
+                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                        color: 'primary.main'
+                      }
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontWeight: 500,
+                        fontSize: '0.95rem'
+                      }}
+                    />
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}

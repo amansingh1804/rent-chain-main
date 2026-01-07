@@ -117,6 +117,7 @@ export default function Listings() {
       whileHover={cardHover}
       whileTap={cardTap}
       layout
+      style={{ height: '100%' }}
     >
       <Card sx={{
         height: '100%',
@@ -354,7 +355,7 @@ export default function Listings() {
                     variant="h5"
                     component="p"
                     sx={{
-                      mb: 4,
+                      mb: 2,
                       opacity: 0.9,
                       fontSize: { xs: '1.2rem', md: '1.5rem' },
                       maxWidth: 700,
@@ -467,7 +468,7 @@ export default function Listings() {
       </motion.div>
 
       {/* Main Content */}
-      <Container maxWidth="lg" sx={{ pb: 8, mt: -4, position: 'relative', zIndex: 3 }}>
+      <Container maxWidth="lg" sx={{ pb: 8, mt: 4, position: 'relative', zIndex: 3 }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
