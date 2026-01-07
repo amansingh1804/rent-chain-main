@@ -27,6 +27,7 @@ import {
   ExpandLess as ExpandLessIcon
 } from "@mui/icons-material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import { buttonHover, buttonTap } from '../animations';
@@ -50,8 +51,10 @@ export default function AppNavbar() {
     setAiFeaturesAnchorEl(null);
   };
 
+  const { user, logout } = useAuth(); // Destructure properly
   const [isScrolled, setIsScrolled] = useState(false);
   const { notifications, unreadCount, markAsRead, markAllAsRead, clearAllNotifications } = useNotifications();
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -592,31 +595,77 @@ export default function AppNavbar() {
               </Tooltip>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Tooltip title="Profile">
-                <Avatar
-                  alt="User"
-                  src="/static/avatar.png"
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    cursor: 'pointer',
-                    border: '3px solid',
-                    borderColor: 'primary.light',
-                    boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      boxShadow: '0 6px 20px rgba(37, 99, 235, 0.25)',
-                      transform: 'scale(1.05)',
-                    }
+            {user ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: 'text.primary', 
+                    fontWeight: 600,
+                    display: { xs: 'none', md: 'block' }
                   }}
-                />
-              </Tooltip>
-            </motion.div>
+                >
+                  {user.name}
+                </Typography>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Tooltip title="Logout">
+                    <Avatar
+                      alt={user.name}
+                      src="/static/avatar.png" // We can keep using static or generate initials
+                      onClick={logout}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        cursor: 'pointer',
+                        border: '2px solid',
+                        borderColor: 'primary.light',
+                        bgcolor: 'primary.main',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          borderColor: 'error.main', // Red on hover to indicate logout
+                          boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)',
+                        }
+                      }}
+                    >
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </Avatar>
+                  </Tooltip>
+                </motion.div>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outlined"
+                  size="small"
+                  sx={{ 
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontWeight: 600 
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  component={Link}
+                  to="/signup"
+                  variant="contained"
+                  size="small"
+                  sx={{ 
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    boxShadow: 'none'
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </Box>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
