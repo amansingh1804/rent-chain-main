@@ -1,3 +1,4 @@
+import process from 'process';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -49,7 +50,7 @@ const bytecode = artifact.bytecode;
 const provider = new JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
 
 // --- NEW: Image Upload to Cloudinary --- //
-app.post('/upload-image', upload.single('image'), async (req, res) => {
+app.post('/api/upload-image', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) throw new Error('No image file received');
     cloudinary.uploader.upload_stream(
@@ -66,7 +67,7 @@ app.post('/upload-image', upload.single('image'), async (req, res) => {
 
 // ---- Property Listing APIs ----
 
-app.post('/property', async (req, res) => {
+app.post('/api/property', async (req, res) => {
   try {
     const { title, description, ipfsHash, owner, contractAddress, rentEth, depositEth, duration, imageUrl } = req.body;
     const property = new Property({ title, description, ipfsHash, owner, contractAddress, rentEth, depositEth, duration, imageUrl, status: 'available' });
@@ -77,24 +78,24 @@ app.post('/property', async (req, res) => {
   }
 });
 
-app.get('/properties', async (req, res) => {
+app.get('/api/properties', async (req, res) => {
   const properties = await Property.find();
   res.json(properties);
 });
 
-app.get('/property/:id', async (req, res) => {
+app.get('/api/property/:id', async (req, res) => {
   const property = await Property.findById(req.params.id);
   res.json(property);
 });
 
-app.get('/properties/by-owner/:owner', async (req, res) => {
+app.get('/api/properties/by-owner/:owner', async (req, res) => {
   const properties = await Property.find({ owner: req.params.owner });
   res.json(properties);
 });
 
 // ---- Rental Agreement APIs ----
 
-app.post('/deploy', async (req, res) => {
+app.post('/api/deploy', async (req, res) => {
   try {
     const { renter, ipfsHash, rentEth, depositEth, duration } = req.body;
     const wallet = new Wallet(process.env.PRIVATE_KEY, provider);
@@ -116,7 +117,7 @@ app.post('/deploy', async (req, res) => {
   }
 });
 
-app.get('/status/:address', async (req, res) => {
+app.get('/api/status/:address', async (req, res) => {
   try {
     const dynamicContract = new Contract(req.params.address, abi, provider);
     const isActive = await dynamicContract.isActive();
@@ -127,7 +128,7 @@ app.get('/status/:address', async (req, res) => {
   }
 });
 
-app.get('/agreement/:address', async (req, res) => {
+app.get('/api/agreement/:address', async (req, res) => {
   try {
     const dynamicContract = new Contract(req.params.address, abi, provider);
     const [
@@ -159,7 +160,7 @@ app.get('/agreement/:address', async (req, res) => {
 });
 
 // Activate contract
-app.post('/activate', async (req, res) => {
+app.post('/api/activate', async (req, res) => {
   try {
     const { contractAddress, rentEth, depositEth } = req.body;
     const wallet = new Wallet(process.env.PRIVATE_KEY, provider);
@@ -175,7 +176,7 @@ app.post('/activate', async (req, res) => {
 });
 
 // Terminate contract
-app.post('/terminate', async (req, res) => {
+app.post('/api/terminate', async (req, res) => {
   try {
     const { contractAddress } = req.body;
     const wallet = new Wallet(process.env.PRIVATE_KEY, provider);
