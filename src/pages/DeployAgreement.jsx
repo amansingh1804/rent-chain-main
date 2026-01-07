@@ -94,7 +94,7 @@ export default function DeployAgreement() {
   async function uploadImageViaBackend(file) {
     const formData = new FormData();
     formData.append('image', file);
-    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const baseUrl = import.meta.env.VITE_API_URL || "/api";
     const response = await fetch(`${baseUrl}/upload-image`, {
       method: 'POST',
       body: formData,
